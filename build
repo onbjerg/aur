@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+
+if [[ -z "$1" ]]; then
+  echo "!> Provide a package name." 1>&2
+  exit 1
+fi
+
+cd pkgs/$1
+
+echo "-> Building $1"
+makepkg
+
+echo "-> Running namcap"
+namcap -i *.pkg.*
+
+echo "-> Generating .SRCINFO"
+makepkg --printsrcinfo > .SRCINFO
+
+echo "-> OK. Run \"git subtree push -P pkgs/$1 $1 master\" to publish"
